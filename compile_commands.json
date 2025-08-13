@@ -1,0 +1,28 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "myapp",
+      "openmf.cpp"
+    ],
+    "directory": "/home/ak/openmf",
+    "file": "/home/ak/openmf/openmf.cpp",
+    "output": "/home/ak/openmf/myapp"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "myapp",
+      "src/glad.c"
+    ],
+    "directory": "/home/ak/openmf",
+    "file": "/home/ak/openmf/src/glad.c",
+    "output": "/home/ak/openmf/myapp"
+  }
+]
