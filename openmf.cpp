@@ -17,8 +17,12 @@ const char *fragmentShaderSource =
     "out vec4 FragColor;\n"
     "void main()\n"
     "{\n"
-    " FragColor = vec4(1.0f, 0.4f, 0.9f, 1.0f);\n"
+    " FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
     "}\n";
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
 
 int main() {
   if (!glfwInit())
@@ -41,6 +45,9 @@ int main() {
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
 
+  // Set framebuffer resize callback
+  glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cerr << "Failed to initialize OpenGL context\n";
     return -1;
@@ -53,6 +60,7 @@ int main() {
   unsigned int shaderProgram;
   unsigned int VBO;
   unsigned int VAO;
+  int width, height;
 
   glGenBuffers(1, &VBO);
   glGenVertexArrays(1, &VAO);
@@ -98,7 +106,11 @@ int main() {
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
 
-  float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.5f, 0.5f, 0.0f};
+  float vertices[] = {
+    -1.0f, -1.0f, 0.0f, // Bottom-left
+     0.0f, -0.0007f, 0.0f, // Bottom-right
+     1.0f,  1.0f, 0.0f  // Top
+  };
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -108,9 +120,13 @@ int main() {
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+  // Set initial viewport size
+  glfwGetFramebufferSize(window, &width, &height);
+  glViewport(0, 0, width, height);
+
   while (!glfwWindowShouldClose(window)) {
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glUseProgram(shaderProgram);
