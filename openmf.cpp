@@ -1,28 +1,26 @@
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-const char *vertexShaderSource =
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec4 aColor;\n"
-    "out vec4 vertexColor;\n"
-    "void main()\n"
-    "{\n"
-    " gl_Position = vec4(aPos, 1.0);\n"
-    " vertexColor = aColor;\n"
-    "}\n";
-
-const char *fragmentShaderSource =
-    "#version 330 core\n"
-    "in vec4 vertexColor;\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    " FragColor = vertexColor;\n"
-    "}\n";
+std::string read_shader_file(const char *path) {
+  std::ifstream shader_file;
+  shader_file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  try {
+    shader_file.open(path);
+    std::stringstream shader_stream;
+    shader_stream << shader_file.rdbuf();
+    shader_file.close();
+    return shader_stream.str();
+  } catch (std::ifstream::failure &e) {
+    std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << path
+              << std::endl;
+  }
+  return "";
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -46,6 +44,10 @@ int main() {
     return -1;
   }
 
+
+  
+
+
   glfwMakeContextCurrent(window);
   glfwSwapInterval(1);
 
@@ -68,6 +70,12 @@ int main() {
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &EBO);
   glGenBuffers(1, &CBO);
+
+  std::string vertexShaderCode = read_shader_file("vertex.vert");
+  std::string fragmentShaderCode = read_shader_file("fragment.frag");
+
+  const char *vertexShaderSource = vertexShaderCode.c_str();
+  const char *fragmentShaderSource = fragmentShaderCode.c_str();
 
   shaderProgram = glCreateProgram();
 
